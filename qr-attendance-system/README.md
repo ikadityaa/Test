@@ -36,7 +36,7 @@ A comprehensive web application built with Laravel for tracking student attendan
 ## 📋 Requirements
 
 ### Server Requirements
-- PHP 8.1 or higher
+- PHP 8.2 or higher
 - Web server (Apache/Nginx)
 - MySQL 5.7+ or SQLite 3
 - Required PHP extensions:
