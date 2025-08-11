@@ -4,364 +4,291 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Attendance System - Installation</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .install-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin: 50px auto;
+            max-width: 800px;
+        }
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        .step {
+            text-align: center;
+            flex: 1;
+        }
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #dee2e6;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+        }
+        .step.active .step-number {
+            background: #007bff;
+            color: white;
+        }
+        .step.completed .step-number {
+            background: #28a745;
+            color: white;
+        }
+        .step-label {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        .form-container {
+            padding: 30px;
+        }
+        .alert {
+            border-radius: 10px;
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #5a6fd8, #6a4190);
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <div id="app" class="container mx-auto px-4 py-8">
-        <div class="max-w-4xl mx-auto">
-            <!-- Header -->
-            <div class="text-center mb-8">
-                <h1 class="text-4xl font-bold text-gray-800 mb-2">QR Attendance System</h1>
-                <p class="text-gray-600">Installation Wizard</p>
+<body>
+    <div class="container">
+        <div class="install-container">
+            <div class="text-center p-4">
+                <h2><i class="fas fa-qrcode text-primary"></i> QR Attendance System</h2>
+                <p class="text-muted">Installation Wizard</p>
             </div>
 
-            <!-- Progress Steps -->
-            <div class="flex justify-center mb-8">
-                <div class="flex items-center space-x-4">
-                    <div class="flex items-center">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center" 
-                             :class="currentStep >= 1 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-600'">
+            <!-- Step Indicators -->
+            <div class="step-indicator">
+                <div class="step {{ $step >= 1 ? 'active' : '' }} {{ $passed_steps[1] ? 'completed' : '' }}">
+                    <div class="step-number">
+                        @if($passed_steps[1])
+                            <i class="fas fa-check"></i>
+                        @else
                             1
-                        </div>
-                        <span class="ml-2 text-sm font-medium" :class="currentStep >= 1 ? 'text-blue-600' : 'text-gray-500'">
-                            Requirements
-                        </span>
+                        @endif
                     </div>
-                    <div class="w-8 h-1 bg-gray-300"></div>
-                    <div class="flex items-center">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center" 
-                             :class="currentStep >= 2 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-600'">
+                    <div class="step-label">Requirements</div>
+                </div>
+                <div class="step {{ $step >= 2 ? 'active' : '' }} {{ $passed_steps[2] ? 'completed' : '' }}">
+                    <div class="step-number">
+                        @if($passed_steps[2])
+                            <i class="fas fa-check"></i>
+                        @else
                             2
-                        </div>
-                        <span class="ml-2 text-sm font-medium" :class="currentStep >= 2 ? 'text-blue-600' : 'text-gray-500'">
-                            Permissions
-                        </span>
+                        @endif
                     </div>
-                    <div class="w-8 h-1 bg-gray-300"></div>
-                    <div class="flex items-center">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center" 
-                             :class="currentStep >= 3 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-600'">
+                    <div class="step-label">Database</div>
+                </div>
+                <div class="step {{ $step >= 3 ? 'active' : '' }} {{ $passed_steps[3] ? 'completed' : '' }}">
+                    <div class="step-number">
+                        @if($passed_steps[3])
+                            <i class="fas fa-check"></i>
+                        @else
                             3
-                        </div>
-                        <span class="ml-2 text-sm font-medium" :class="currentStep >= 3 ? 'text-blue-600' : 'text-gray-500'">
-                            Configuration
-                        </span>
+                        @endif
                     </div>
-                    <div class="w-8 h-1 bg-gray-300"></div>
-                    <div class="flex items-center">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center" 
-                             :class="currentStep >= 4 ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-600'">
+                    <div class="step-label">Admin Setup</div>
+                </div>
+                <div class="step {{ $step >= 4 ? 'active' : '' }}">
+                    <div class="step-number">
+                        @if($step >= 4)
+                            <i class="fas fa-check"></i>
+                        @else
                             4
-                        </div>
-                        <span class="ml-2 text-sm font-medium" :class="currentStep >= 4 ? 'text-blue-600' : 'text-gray-500'">
-                            Install
-                        </span>
+                        @endif
                     </div>
+                    <div class="step-label">Complete</div>
                 </div>
             </div>
 
-            <!-- Step 1: Requirements Check -->
-            <div v-if="currentStep === 1" class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-semibold mb-4">System Requirements</h2>
-                <div v-if="loading" class="text-center py-8">
-                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-                    <p class="mt-2 text-gray-600">Checking requirements...</p>
-                </div>
-                <div v-else>
-                    <div class="space-y-3">
-                        <div v-for="(met, requirement) in requirements" :key="requirement" 
-                             class="flex items-center justify-between p-3 rounded-lg border"
-                             :class="met ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'">
-                            <span class="font-medium" :class="met ? 'text-green-800' : 'text-red-800'">
-                                @{{ requirement }}
-                            </span>
-                            <div class="flex items-center">
-                                <svg v-if="met" class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                                </svg>
-                                <svg v-else class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                </svg>
+            <div class="form-container">
+                @if(isset($error) && $error)
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i> {{ $error }}
+                    </div>
+                @endif
+
+                @if(isset($debug) && $debug)
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i> {{ $debug }}
+                    </div>
+                @endif
+
+                <!-- Step 1: Requirements Check -->
+                @if($step == 1)
+                    <div class="text-center">
+                        <h4><i class="fas fa-clipboard-check text-primary"></i> System Requirements</h4>
+                        <p class="text-muted">Checking if your server meets the requirements...</p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h6>PHP Extensions</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> PHP 8.2+ (Current: {{ PHP_VERSION }})</li>
+                                    <li><i class="fas fa-check text-success"></i> BCMath Extension</li>
+                                    <li><i class="fas fa-check text-success"></i> Ctype Extension</li>
+                                    <li><i class="fas fa-check text-success"></i> JSON Extension</li>
+                                    <li><i class="fas fa-check text-success"></i> Mbstring Extension</li>
+                                    <li><i class="fas fa-check text-success"></i> OpenSSL Extension</li>
+                                    <li><i class="fas fa-check text-success"></i> PDO Extension</li>
+                                    <li><i class="fas fa-check text-success"></i> Tokenizer Extension</li>
+                                    <li><i class="fas fa-check text-success"></i> XML Extension</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Directory Permissions</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success"></i> storage/app (Writable)</li>
+                                    <li><i class="fas fa-check text-success"></i> storage/framework (Writable)</li>
+                                    <li><i class="fas fa-check text-success"></i> storage/logs (Writable)</li>
+                                    <li><i class="fas fa-check text-success"></i> bootstrap/cache (Writable)</li>
+                                    <li><i class="fas fa-check text-success"></i> .env file (Writable)</li>
+                                </ul>
                             </div>
                         </div>
-                    </div>
-                    <div class="mt-6 flex justify-between">
-                        <button @click="checkRequirements" 
-                                class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
-                            Recheck
-                        </button>
-                        <button @click="nextStep" 
-                                :disabled="!allRequirementsMet"
-                                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed">
-                            Next
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Step 2: Permissions Check -->
-            <div v-if="currentStep === 2" class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-semibold mb-4">Directory Permissions</h2>
-                <div v-if="loading" class="text-center py-8">
-                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-                    <p class="mt-2 text-gray-600">Checking permissions...</p>
-                </div>
-                <div v-else>
-                    <div class="space-y-3">
-                        <div v-for="(writable, path) in permissions" :key="path" 
-                             class="flex items-center justify-between p-3 rounded-lg border"
-                             :class="writable ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'">
-                            <span class="font-medium" :class="writable ? 'text-green-800' : 'text-red-800'">
-                                @{{ path }}
-                            </span>
-                            <div class="flex items-center">
-                                <svg v-if="writable" class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                                </svg>
-                                <svg v-else class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                </svg>
+                        <form method="POST" class="mt-4">
+                            @csrf
+                            <input type="hidden" name="requirements_success" value="1">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-arrow-right"></i> Continue to Database Setup
+                            </button>
+                        </form>
+                    </div>
+                @endif
+
+                <!-- Step 2: Database Configuration -->
+                @if($step == 2)
+                    <h4><i class="fas fa-database text-primary"></i> Database Configuration</h4>
+                    <p class="text-muted">Please provide your database connection details.</p>
+
+                    <form method="POST">
+                        @csrf
+                        <input type="hidden" name="step" value="2">
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="hostname" class="form-label">Database Host</label>
+                                <input type="text" class="form-control" id="hostname" name="hostname" value="{{ old('hostname', 'localhost') }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="database" class="form-label">Database Name</label>
+                                <input type="text" class="form-control" id="database" name="database" value="{{ old('database') }}" required>
                             </div>
                         </div>
-                    </div>
-                    <div class="mt-6 flex justify-between">
-                        <button @click="prevStep" 
-                                class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
-                            Previous
-                        </button>
-                        <button @click="nextStep" 
-                                :disabled="!allPermissionsWritable"
-                                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed">
-                            Next
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Step 3: Configuration -->
-            <div v-if="currentStep === 3" class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-semibold mb-4">Application Configuration</h2>
-                <form @submit.prevent="configure">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Application Name</label>
-                            <input v-model="config.app_name" type="text" required
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Application URL</label>
-                            <input v-model="config.app_url" type="url" required
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Database Connection</label>
-                            <select v-model="config.db_connection" @change="onDbConnectionChange"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="sqlite">SQLite</option>
-                                <option value="mysql">MySQL</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- MySQL Configuration -->
-                    <div v-if="config.db_connection === 'mysql'" class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Database Host</label>
-                            <input v-model="config.db_host" type="text" required
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Database Port</label>
-                            <input v-model="config.db_port" type="text" required value="3306"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Database Name</label>
-                            <input v-model="config.db_database" type="text" required
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Database Username</label>
-                            <input v-model="config.db_username" type="text" required
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Database Password</label>
-                            <input v-model="config.db_password" type="password"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        </div>
-                    </div>
-
-                    <div class="mt-6 flex justify-between">
-                        <button type="button" @click="prevStep" 
-                                class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
-                            Previous
-                        </button>
-                        <button type="submit" :disabled="configuring"
-                                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed">
-                            @{{ configuring ? 'Configuring...' : 'Configure' }}
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-            <!-- Step 4: Installation -->
-            <div v-if="currentStep === 4" class="bg-white rounded-lg shadow-md p-6">
-                <h2 class="text-2xl font-semibold mb-4">Installation</h2>
-                <div v-if="installing" class="text-center py-8">
-                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-                    <p class="mt-2 text-gray-600">Installing QR Attendance System...</p>
-                    <p class="text-sm text-gray-500 mt-1">This may take a few moments</p>
-                </div>
-                <div v-else>
-                    <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-                        <div class="flex">
-                            <svg class="w-5 h-5 text-green-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
-                            <div class="ml-3">
-                                <h3 class="text-sm font-medium text-green-800">Configuration Complete</h3>
-                                <p class="text-sm text-green-700 mt-1">Your application is ready to be installed.</p>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="username" class="form-label">Database Username</label>
+                                <input type="text" class="form-control" id="username" name="username" value="{{ old('username') }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="password" class="form-label">Database Password</label>
+                                <input type="password" class="form-control" id="password" name="password" value="{{ old('password') }}">
                             </div>
                         </div>
-                    </div>
-                    <div class="flex justify-between">
-                        <button @click="prevStep" 
-                                class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
-                            Previous
-                        </button>
-                        <button @click="install" 
-                                class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                            Install Now
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Success Message -->
-            <div v-if="installationComplete" class="bg-white rounded-lg shadow-md p-6 text-center">
-                <div class="text-green-500 mb-4">
-                    <svg class="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                </div>
-                <h2 class="text-2xl font-semibold text-gray-800 mb-2">Installation Complete!</h2>
-                <p class="text-gray-600 mb-6">Your QR Attendance System has been successfully installed.</p>
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                    <h3 class="font-medium text-blue-800 mb-2">Default Login Credentials:</h3>
-                    <p class="text-sm text-blue-700"><strong>Email:</strong> admin@qrattendance.com</p>
-                    <p class="text-sm text-blue-700"><strong>Password:</strong> password</p>
-                </div>
-                <a href="/" class="inline-block px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                    Go to Application
-                </a>
+                        <div class="d-flex justify-content-between">
+                            <a href="?step=1" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Previous
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-arrow-right"></i> Test Connection & Continue
+                            </button>
+                        </div>
+                    </form>
+                @endif
+
+                <!-- Step 3: Admin Setup -->
+                @if($step == 3)
+                    <h4><i class="fas fa-user-shield text-primary"></i> Administrator Setup</h4>
+                    <p class="text-muted">Create your administrator account.</p>
+
+                    <form method="POST">
+                        @csrf
+                        <input type="hidden" name="step" value="3">
+                        
+                        <div class="mb-3">
+                            <label for="admin_email" class="form-label">Admin Email</label>
+                            <input type="email" class="form-control" id="admin_email" name="admin_email" value="{{ old('admin_email') }}" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="admin_password" class="form-label">Admin Password</label>
+                                <input type="password" class="form-control" id="admin_password" name="admin_password" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="admin_passwordr" class="form-label">Confirm Password</label>
+                                <input type="password" class="form-control" id="admin_passwordr" name="admin_passwordr" required>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="?step=2" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Previous
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-rocket"></i> Install System
+                            </button>
+                        </div>
+                    </form>
+                @endif
+
+                <!-- Step 4: Installation Complete -->
+                @if($step == 4)
+                    <div class="text-center">
+                        <div class="mb-4">
+                            <i class="fas fa-check-circle text-success" style="font-size: 4rem;"></i>
+                        </div>
+                        <h4 class="text-success">Installation Complete!</h4>
+                        <p class="text-muted">Your QR Attendance System has been successfully installed.</p>
+                        
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle"></i> Important Information</h6>
+                            <ul class="list-unstyled mb-0">
+                                <li><strong>Admin URL:</strong> <a href="/admin" target="_blank">/admin</a></li>
+                                <li><strong>Default Admin:</strong> Use the email and password you just created</li>
+                                <li><strong>Security:</strong> Please delete the install directory after first login</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <a href="/admin" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt"></i> Go to Admin Panel
+                            </a>
+                            <a href="/install/delete" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete the installation directory?')">
+                                <i class="fas fa-trash"></i> Delete Install Directory
+                            </a>
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
 
-    <script>
-        const { createApp } = Vue;
-
-        createApp({
-            data() {
-                return {
-                    currentStep: 1,
-                    loading: false,
-                    configuring: false,
-                    installing: false,
-                    installationComplete: false,
-                    requirements: {},
-                    permissions: {},
-                    config: {
-                        app_name: 'QR Attendance System',
-                        app_url: window.location.origin,
-                        db_connection: 'sqlite',
-                        db_host: 'localhost',
-                        db_port: '3306',
-                        db_database: '',
-                        db_username: '',
-                        db_password: ''
-                    }
-                }
-            },
-            computed: {
-                allRequirementsMet() {
-                    return Object.values(this.requirements).every(met => met);
-                },
-                allPermissionsWritable() {
-                    return Object.values(this.permissions).every(writable => writable);
-                }
-            },
-            mounted() {
-                this.checkRequirements();
-            },
-            methods: {
-                async checkRequirements() {
-                    this.loading = true;
-                    try {
-                        const response = await axios.get('/install/requirements');
-                        this.requirements = response.data.requirements;
-                    } catch (error) {
-                        console.error('Error checking requirements:', error);
-                    } finally {
-                        this.loading = false;
-                    }
-                },
-                async checkPermissions() {
-                    this.loading = true;
-                    try {
-                        const response = await axios.get('/install/permissions');
-                        this.permissions = response.data.permissions;
-                    } catch (error) {
-                        console.error('Error checking permissions:', error);
-                    } finally {
-                        this.loading = false;
-                    }
-                },
-                async configure() {
-                    this.configuring = true;
-                    try {
-                        await axios.post('/install/configure', this.config);
-                        this.nextStep();
-                    } catch (error) {
-                        alert('Configuration failed: ' + (error.response?.data?.message || error.message));
-                    } finally {
-                        this.configuring = false;
-                    }
-                },
-                async install() {
-                    this.installing = true;
-                    try {
-                        await axios.post('/install/install');
-                        this.installationComplete = true;
-                    } catch (error) {
-                        alert('Installation failed: ' + (error.response?.data?.message || error.message));
-                    } finally {
-                        this.installing = false;
-                    }
-                },
-                nextStep() {
-                    if (this.currentStep === 1) {
-                        this.checkPermissions();
-                    }
-                    this.currentStep++;
-                },
-                prevStep() {
-                    this.currentStep--;
-                },
-                onDbConnectionChange() {
-                    if (this.config.db_connection === 'sqlite') {
-                        this.config.db_host = '';
-                        this.config.db_port = '';
-                        this.config.db_database = '';
-                        this.config.db_username = '';
-                        this.config.db_password = '';
-                    }
-                }
-            }
-        }).mount('#app');
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -13,11 +13,10 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 
 // Installation routes
 Route::group(['prefix' => 'install', 'middleware' => 'web'], function () {
-    Route::get('/', [InstallController::class, 'index'])->name('install.index');
-    Route::get('/requirements', [InstallController::class, 'checkRequirements'])->name('install.requirements');
-    Route::get('/permissions', [InstallController::class, 'checkPermissions'])->name('install.permissions');
-    Route::post('/configure', [InstallController::class, 'configure'])->name('install.configure');
-    Route::post('/install', [InstallController::class, 'install'])->name('install.run');
+    Route::get('/', [App\Http\Controllers\Install\InstallController::class, 'index'])->name('install.index');
+    Route::post('/', [App\Http\Controllers\Install\InstallController::class, 'index'])->name('install.process');
+    Route::get('/requirements', [App\Http\Controllers\Install\InstallController::class, 'checkRequirements'])->name('install.requirements');
+    Route::get('/delete', [App\Http\Controllers\Install\InstallController::class, 'deleteInstallDir'])->name('install.delete');
 });
 
 // Public routes (no authentication required)
