@@ -15,7 +15,7 @@
 ## System Requirements
 
 ### Server Requirements
-- **PHP**: Version 8.1 or higher
+- **PHP**: Version 8.2 or higher
 - **Web Server**: Apache or Nginx
 - **Database**: MySQL 5.7+ or SQLite 3
 - **Extensions**: 

@@ -23,7 +23,7 @@ class InstallController extends Controller
     public function checkRequirements()
     {
         $requirements = [
-            'PHP Version (>= 8.1)' => version_compare(PHP_VERSION, '8.1.0', '>='),
+            'PHP Version (>= 8.2)' => version_compare(PHP_VERSION, '8.2.0', '>='),
             'BCMath Extension' => extension_loaded('bcmath'),
             'Ctype Extension' => extension_loaded('ctype'),
             'JSON Extension' => extension_loaded('json'),
