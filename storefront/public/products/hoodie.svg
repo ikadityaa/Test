@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <rect width="256" height="256" fill="#e5e7eb"/>
+  <path d="M96 64h64l16 32v96H80V96z" fill="#1f2937"/>
+  <circle cx="128" cy="64" r="24" fill="#374151"/>
+  <text x="50%" y="90%" text-anchor="middle" font-size="14" fill="#6b7280">Hoodie</text>
+</svg>

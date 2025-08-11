@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <rect width="256" height="256" fill="#f3f4f6"/>
+  <path d="M64 64l32-16h64l32 16-16 32h-16v96H96V96H80z" fill="#111827" opacity=".8"/>
+  <text x="50%" y="90%" text-anchor="middle" font-size="14" fill="#6b7280">Kaos</text>
+</svg>
