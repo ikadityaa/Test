@@ -11,18 +11,6 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class QrController extends Controller
 {
-    private function normalizePhone(string $raw): string
-    {
-        $digits = preg_replace('/[^0-9]/', '', $raw) ?? '';
-        if (str_starts_with($digits, '00')) {
-            $digits = substr($digits, 2);
-        }
-        if (!str_starts_with($digits, '+')) {
-            $digits = '+' . $digits;
-        }
-        return $digits;
-    }
-
     public function generateQr($sessionId)
     {
         $qrSession = QrSession::with('course')->findOrFail($sessionId);
@@ -108,29 +96,13 @@ class QrController extends Controller
         }
 
         // Create attendance record
-        $record = AttendanceRecord::create([
+        AttendanceRecord::create([
             'user_id' => $user->id,
             'course_id' => $qrSession->course_id,
             'qr_session_id' => $qrSession->id,
             'check_in_time' => now(),
             'check_in_method' => 'qr',
         ]);
-
-        // Send WhatsApp confirmation if configured and user has phone
-        try {
-            if (!empty($user->phone)) {
-                app(\App\Services\WhatsAppService::class)
-                    ->sendMessage($this->normalizePhone($user->phone),
-                        sprintf('Attendance confirmed for %s - %s at %s',
-                            $qrSession->course->name,
-                            $qrSession->title,
-                            now()->format('Y-m-d H:i:s')
-                        )
-                    );
-            }
-        } catch (\Throwable $e) {
-            // Silently ignore notification failures to not block check-in
-        }
 
         return response()->json([
             'success' => true,
