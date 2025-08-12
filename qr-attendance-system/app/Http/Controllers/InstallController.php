@@ -103,7 +103,7 @@ class InstallController extends Controller
     {
         try {
             // Run migrations
-            Artisan::call('migrate:fresh', ['--force' => true]);
+            Artisan::call('migrate', ['--force' => true]);
 
             // Run seeders
             Artisan::call('db:seed', ['--force' => true]);
@@ -125,6 +125,45 @@ class InstallController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Installation failed: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function quick()
+    {
+        // Prepare .env for production shared hosting using SQLite by default
+        $env = base_path('.env');
+        if (!File::exists($env) && File::exists(base_path('.env.example'))) {
+            File::copy(base_path('.env.example'), $env);
+        }
+
+        // Ensure SQLite database file exists
+        if (!File::exists(database_path('database.sqlite'))){
+            File::put(database_path('database.sqlite'), '');
+        }
+
+        // Update env to use sqlite and production flags
+        $content = File::get($env);
+        $replacements = [
+            '/^APP_ENV=.*/m' => 'APP_ENV=production',
+            '/^APP_DEBUG=.*/m' => 'APP_DEBUG=false',
+            '/^DB_CONNECTION=.*/m' => 'DB_CONNECTION=sqlite',
+        ];
+        foreach ($replacements as $pattern => $replacement) {
+            $content = preg_replace($pattern, $replacement, $content);
+        }
+        File::put($env, $content);
+
+        try {
+            // Generate key if missing
+            Artisan::call('key:generate', ['--force' => true]);
+
+            // Run install normally
+            return $this->install();
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Quick install failed: ' . $e->getMessage(),
             ], 500);
         }
     }

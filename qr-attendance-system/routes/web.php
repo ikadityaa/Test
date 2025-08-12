@@ -13,10 +13,12 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 
 // Installation routes
 Route::group(['prefix' => 'install', 'middleware' => 'web'], function () {
-    Route::get('/', [App\Http\Controllers\Install\InstallController::class, 'index'])->name('install.index');
-    Route::post('/', [App\Http\Controllers\Install\InstallController::class, 'index'])->name('install.process');
-    Route::get('/requirements', [App\Http\Controllers\Install\InstallController::class, 'checkRequirements'])->name('install.requirements');
-    Route::get('/delete', [App\Http\Controllers\Install\InstallController::class, 'deleteInstallDir'])->name('install.delete');
+    Route::get('/', [App\Http\Controllers\InstallController::class, 'index'])->name('install.index');
+    Route::get('/requirements', [App\Http\Controllers\InstallController::class, 'checkRequirements'])->name('install.requirements');
+    Route::get('/permissions', [App\Http\Controllers\InstallController::class, 'checkPermissions'])->name('install.permissions');
+    Route::post('/configure', [App\Http\Controllers\InstallController::class, 'configure'])->name('install.configure');
+    Route::post('/run', [App\Http\Controllers\InstallController::class, 'install'])->name('install.run');
+    Route::get('/quick', [App\Http\Controllers\InstallController::class, 'quick'])->name('install.quick');
 });
 
 // Public routes (no authentication required)
