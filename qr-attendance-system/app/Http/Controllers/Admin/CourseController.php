@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\QrSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\WhatsAppService;
 
 class CourseController extends Controller
 {
@@ -167,6 +168,54 @@ class CourseController extends Controller
         $qrSessions = $course->qrSessions()->with('creator')->latest()->paginate(10);
 
         return view('admin.courses.qr-sessions', compact('course', 'qrSessions'));
+    }
+
+    public function sendReminder(Request $request, Course $course, WhatsAppService $whatsapp)
+    {
+        $this->checkCourseAccess($course);
+
+        $message = $request->input('message', 'Reminder: QR attendance session is starting soon.');
+
+        $sent = 0;
+        foreach ($course->students as $student) {
+            if (!empty($student->phone)) {
+                $sent += $whatsapp->sendMessage($this->normalizePhone($student->phone), $message) ? 1 : 0;
+            }
+        }
+
+        return back()->with('success', "Sent reminders to {$sent} students.");
+    }
+
+    public function sendSessionSummary(Request $request, Course $course, QrSession $session, WhatsAppService $whatsapp)
+    {
+        $this->checkCourseAccess($course);
+
+        if ($session->course_id !== $course->id) {
+            abort(404);
+        }
+
+        $count = $session->attendanceRecords()->count();
+        $msg = sprintf('Attendance summary for %s - %s: %d check-ins.', $course->name, $session->title, $count);
+
+        $recipients = $whatsapp->getSummaryRecipients();
+        $sent = 0;
+        foreach ($recipients as $phone) {
+            $sent += $whatsapp->sendMessage($phone, $msg) ? 1 : 0;
+        }
+
+        return back()->with('success', "Summary sent to {$sent} recipients.");
+    }
+
+    private function normalizePhone(string $raw): string
+    {
+        $digits = preg_replace('/[^0-9]/', '', $raw) ?? '';
+        if (str_starts_with($digits, '00')) {
+            $digits = substr($digits, 2);
+        }
+        if (!str_starts_with($digits, '+')) {
+            $digits = '+' . $digits;
+        }
+        return $digits;
     }
 
     public function createQrSession(Course $course)
