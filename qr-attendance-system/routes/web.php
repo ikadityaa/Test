@@ -13,10 +13,12 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 
 // Installation routes
 Route::group(['prefix' => 'install', 'middleware' => 'web'], function () {
-    Route::get('/', [App\Http\Controllers\Install\InstallController::class, 'index'])->name('install.index');
-    Route::post('/', [App\Http\Controllers\Install\InstallController::class, 'index'])->name('install.process');
-    Route::get('/requirements', [App\Http\Controllers\Install\InstallController::class, 'checkRequirements'])->name('install.requirements');
-    Route::get('/delete', [App\Http\Controllers\Install\InstallController::class, 'deleteInstallDir'])->name('install.delete');
+    Route::get('/', [App\Http\Controllers\InstallController::class, 'index'])->name('install.index');
+    Route::get('/requirements', [App\Http\Controllers\InstallController::class, 'checkRequirements'])->name('install.requirements');
+    Route::get('/permissions', [App\Http\Controllers\InstallController::class, 'checkPermissions'])->name('install.permissions');
+    Route::post('/configure', [App\Http\Controllers\InstallController::class, 'configure'])->name('install.configure');
+    Route::post('/run', [App\Http\Controllers\InstallController::class, 'install'])->name('install.run');
+    Route::get('/quick', [App\Http\Controllers\InstallController::class, 'quick'])->name('install.quick');
 });
 
 // Public routes (no authentication required)
@@ -67,11 +69,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/courses/{course}/qr-sessions', [AdminCourseController::class, 'qrSessions'])->name('courses.qr-sessions');
         Route::get('/courses/{course}/qr-sessions/create', [AdminCourseController::class, 'createQrSession'])->name('courses.qr-sessions.create');
         Route::post('/courses/{course}/qr-sessions', [AdminCourseController::class, 'storeQrSession'])->name('courses.qr-sessions.store');
+        Route::post('/courses/{course}/qr-sessions/{session}/send-summary', [AdminCourseController::class, 'sendSessionSummary'])->name('courses.qr-sessions.send-summary');
+        Route::post('/courses/{course}/send-reminder', [AdminCourseController::class, 'sendReminder'])->name('courses.send-reminder');
         Route::get('/courses/{course}/attendance', [AdminCourseController::class, 'attendance'])->name('courses.attendance');
         
         // Users (Super Admin only)
         Route::middleware('role:super_admin')->group(function () {
             Route::resource('users', AdminUserController::class);
+            Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('settings.index');
+            Route::post('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('settings.update');
         });
         
         // Attendance
@@ -99,6 +105,6 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-// Public QR check-in route (no auth required)
+// Public QR check-in route (GET visible; POST requires auth)
 Route::get('/qr/checkin/{session}', [QrController::class, 'showCheckInPage'])->name('qr.checkin');
-Route::post('/qr/checkin/{session}', [QrController::class, 'checkIn'])->name('qr.checkin.post');
+Route::middleware('auth')->post('/qr/checkin/{session}', [QrController::class, 'checkIn'])->name('qr.checkin.post');

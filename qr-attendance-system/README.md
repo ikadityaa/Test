@@ -2,6 +2,14 @@
 
 A comprehensive web application built with Laravel for tracking student attendance using QR codes. Designed specifically for tutoring services and educational institutions.
 
+## Installation (Shared Hosting Quick Start)
+- Upload all project files to your hosting account (root or a subfolder)
+- Make sure `storage/` and `bootstrap/cache/` are writable
+- Visit `/install/quick` once to auto-configure SQLite, generate key, run migrations/seeders
+- Afterwards, log in (or register), then manage settings under Admin → Settings
+
+For other methods (MySQL/manual/CLI), see `INSTALLATION.md`.
+
 ## 🚀 Features
 
 ### 🔐 Role-Based Access Control
